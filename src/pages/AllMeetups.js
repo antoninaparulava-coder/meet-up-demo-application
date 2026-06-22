@@ -1,32 +1,47 @@
+import { useState, useEffect } from 'react'
+
 import React from 'react'
 import MeetupList from '../components/meetups/MeetupList'
 
-const DUMMY_DATA = [
-  {
-    id: 'm1',
-    title: 'This is a first meetup',
-    image:
-      'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&auto=format&fit=crop',
-    address: 'Meetupstreet 5, 12345 Meetup City',
-    description:
-      'This is a first, amazing meetup which you definitely should not miss. It will be a lot of fun!',
-  },
-  {
-    id: 'm2',
-    title: 'This is a second meetup',
-    image:
-      'https://www.datocms-assets.com/92424/1751319767-240906-brearley-405.jpg?ar=7%3A4&auto=format&crop=focalpoint&dpr=0.32&fit=crop&fp-x=0.78&fp-y=0.57&w=6000',
-    address: 'Meetupstreet 5, 12345 Meetup City',
-    description:
-      'This is a first, amazing meetup which you definitely should not miss. It will be a lot of fun!',
-  },
-]
-
 function AllMeetupsPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+  useEffect(() => {
+    setIsLoading(true)
+    fetch(
+      'https://react-getting-started-cec34-default-rtdb.firebaseio.com/meetups.json'
+    ).then(response => {
+      return response.json()
+    }).then(data => {
+      const meetups = [];
+
+      for (const key in data) {
+        const meetup = {
+          id: key,
+          ...data[key]
+        }
+
+        meetups.push(meetup);
+      }
+
+      setIsLoading(false);
+      setLoadedMeetups(meetups);
+    });
+    }, [])
+
+  
+
+  if (isLoading) {
+    return <section>
+      <p>Loading...</p>
+    </section>
+  }
+
   return (
     <section>
       <h1>All Meetups</h1>
-      <MeetupList meetups={DUMMY_DATA} />
+      <MeetupList meetups={loadedMeetups} />
     </section>
   )
 }
