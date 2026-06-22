@@ -1,7 +1,11 @@
-import React from 'react'
-import NewMeetupForm from '../components/meetups/NewMeetupForm'
+import { useNavigate } from 'react-router-dom';
+
+import React from 'react';
+import NewMeetupForm from '../components/meetups/NewMeetupForm';
 
 function NewMeetupPage() {
+    const navigate = useNavigate();
+
     function addMeetupHandler(meetupData) {
         fetch(
             'https://react-getting-started-cec34-default-rtdb.firebaseio.com/meetups.json',
@@ -12,7 +16,9 @@ function NewMeetupPage() {
                     'Content-Type':'application/json'
                 }
             }
-        );
+        ).then(() => {
+            navigate('/', {replace:true});
+        });
     }
 
   return (
